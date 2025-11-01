@@ -1,4 +1,5 @@
 import { homedir } from "node:os";
+import { resolve } from "node:path";
 import { parseArgs } from "node:util";
 
 const {
@@ -17,8 +18,20 @@ const printCurrentDir = () => {
   console.log(`You are currently in ${currentDir}`);
 };
 
+const commands = {
+  up: () => {
+    currentDir = resolve(currentDir, "..");
+    printCurrentDir();
+  }
+}
+
 process.stdin.setDefaultEncoding("utf-8").on("data", (data) => {
-  console.log(data.toString());
+  const input = data.toString().trim();
+  const command = commands[input];
+  if (command !== undefined) {
+    command();
+    return;
+  }
 });
 
 console.log(`Welcome to the File Manager, ${username}!`);
