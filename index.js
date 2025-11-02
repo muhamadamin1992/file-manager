@@ -31,7 +31,6 @@ const printCurrentDir = () => {
 const commands = {
   up: () => {
     currentDir = resolve(currentDir, "..");
-    printCurrentDir();
   },
   ls: async () => {
     console.table(
@@ -100,6 +99,8 @@ process.stdin.setDefaultEncoding("utf-8").on("data", async (data) => {
       await command(...args);
     } catch (err) {
       throw new Error("Operation failed");
+    } finally {
+      printCurrentDir();
     }
   }
 });
