@@ -80,6 +80,10 @@ const commands = {
     const copyPath = join(currentDir, copyDir);
     await pipeline(createReadStream(sourcePath), createWriteStream(copyPath));
   },
+  mv: async (sourceName, copyDir) => {
+    await commands.cp(sourceName, copyDir);
+    await commands.rm(sourceName);
+  },
   rm: async (fileName) => {
     await unlink(join(currentDir, fileName));
   },
