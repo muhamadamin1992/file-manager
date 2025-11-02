@@ -1,7 +1,7 @@
 import { homedir } from "node:os";
-import { resolve, relative } from "node:path";
+import { resolve, relative, join } from "node:path";
 import { parseArgs } from "node:util";
-import { readdir, readFile } from "node:fs/promises";
+import { readdir, readFile, writeFile } from "node:fs/promises";
 
 const {
   values: { username },
@@ -53,6 +53,10 @@ const commands = {
     const data = await readFile(relative(currentDir, filePath));
     console.log(data.toString());
   },
+  add: async (fileName) => {
+    const pathName = join(currentDir, fileName)
+    await writeFile(pathName, "");
+  }
 };
 
 process.stdin.setDefaultEncoding("utf-8").on("data", async (data) => {
