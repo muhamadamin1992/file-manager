@@ -1,7 +1,7 @@
 import { homedir } from "node:os";
 import { resolve, join } from "node:path";
 import { parseArgs } from "node:util";
-import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
+import { readdir, readFile, writeFile, mkdir, rename } from "node:fs/promises";
 
 const {
   values: { username },
@@ -54,12 +54,17 @@ const commands = {
     console.log(data.toString());
   },
   add: async (fileName) => {
-    const pathName = join(currentDir, fileName)
+    const pathName = join(currentDir, fileName);
     await writeFile(pathName, "");
   },
   mkdir: async (dirName) => {
-    const pathName = join(currentDir, dirName)
+    const pathName = join(currentDir, dirName);
     await mkdir(pathName);
+  },
+  rn: async (oldFileName, newFileName) => {
+    const oldPath = join(currentDir, oldFileName);
+    const newPath = join(currentDir, newFileName);
+    await rename(oldPath, newPath);
   },
 };
 
@@ -72,13 +77,13 @@ process.stdin.setDefaultEncoding("utf-8").on("data", async (data) => {
     }
     try {
       await command(...args);
-    } catch(err) {
+    } catch (err) {
       throw new Error("Operation failed");
     }
   }
 });
 
-console.log(import.meta.url)
+console.log(import.meta.url);
 
 console.log(`Welcome to the File Manager, ${username}!`);
 printCurrentDir();
