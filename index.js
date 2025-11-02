@@ -1,4 +1,4 @@
-import { homedir } from "node:os";
+import os, { homedir } from "node:os";
 import { resolve, join } from "node:path";
 import { parseArgs } from "node:util";
 import {
@@ -90,6 +90,19 @@ const commands = {
     const newPath = resolve(currentDir, arg);
     await readdir(newPath);
     currentDir = newPath;
+  },
+  os: (arg) => {
+    const commandName = arg.slice(2);
+    if (commandName === "username") {
+      console.log(os.userInfo().username);
+      return;
+    }
+    const osCommand = os[arg.slice(2)];
+    if (typeof osCommand === "function") {
+      console.log(osCommand());
+      return;
+    }
+    console.log(osCommand);
   }
 };
 
