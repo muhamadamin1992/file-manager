@@ -2,6 +2,8 @@ import { homedir } from "node:os";
 import { resolve, join } from "node:path";
 import { parseArgs } from "node:util";
 import { readdir, readFile, writeFile, mkdir, rename } from "node:fs/promises";
+import { createWriteStream, createReadStream } from "node:fs";
+import { pipeline } from "node:stream/promises";
 
 const {
   values: { username },
@@ -65,6 +67,11 @@ const commands = {
     const oldPath = join(currentDir, oldFileName);
     const newPath = join(currentDir, newFileName);
     await rename(oldPath, newPath);
+  },
+  cp: async (sourceName, copyDir) => {
+    const sourcePath = join(currentDir, sourceName);
+    const copyPath = join(currentDir, copyDir);
+    await pipeline(createReadStream(sourcePath), createWriteStream(copyPath));
   },
 };
 
