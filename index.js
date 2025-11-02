@@ -1,7 +1,7 @@
 import { homedir } from "node:os";
 import { resolve, relative, join } from "node:path";
 import { parseArgs } from "node:util";
-import { readdir, readFile, writeFile } from "node:fs/promises";
+import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
 
 const {
   values: { username },
@@ -56,7 +56,11 @@ const commands = {
   add: async (fileName) => {
     const pathName = join(currentDir, fileName)
     await writeFile(pathName, "");
-  }
+  },
+  mkdir: async (dirName) => {
+    const pathName = join(currentDir, dirName)
+    await mkdir(pathName);
+  },
 };
 
 process.stdin.setDefaultEncoding("utf-8").on("data", async (data) => {
