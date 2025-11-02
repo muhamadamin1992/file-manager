@@ -86,6 +86,11 @@ const commands = {
   rm: async (fileName) => {
     await unlink(join(currentDir, fileName));
   },
+  cd: async (arg) => {
+    const newPath = resolve(currentDir, arg);
+    await readdir(newPath);
+    currentDir = newPath;
+  }
 };
 
 process.stdin.setDefaultEncoding("utf-8").on("data", async (data) => {
