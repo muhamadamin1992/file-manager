@@ -1,5 +1,5 @@
 import { homedir } from "node:os";
-import { resolve, relative, join } from "node:path";
+import { resolve, join } from "node:path";
 import { parseArgs } from "node:util";
 import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
 
@@ -50,7 +50,7 @@ const commands = {
     );
   },
   cat: async (filePath) => {
-    const data = await readFile(relative(currentDir, filePath));
+    const data = await readFile(join(currentDir, filePath));
     console.log(data.toString());
   },
   add: async (fileName) => {
