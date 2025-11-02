@@ -1,7 +1,7 @@
 import { homedir } from "node:os";
-import { resolve } from "node:path";
+import { resolve, relative } from "node:path";
 import { parseArgs } from "node:util";
-import { readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 
 const {
   values: { username },
@@ -51,14 +51,22 @@ const commands = {
   },
 };
 
-process.stdin.setDefaultEncoding("utf-8").on("data", (data) => {
-  const input = data.toString().trim();
+process.stdin.setDefaultEncoding("utf-8").on("data", async (data) => {
+  const [input, ...args] = data.toString().trim().split(/\s+/);
   const command = commands[input];
   if (command !== undefined) {
-    command();
-    return;
+    if (command.length > args.length) {
+      throw new Error("Invalid input");
+    }
+    try {
+      await command(...args);
+    } catch(err) {
+      throw new Error("Operation failed");
+    }
   }
 });
+
+console.log(import.meta.url)
 
 console.log(`Welcome to the File Manager, ${username}!`);
 printCurrentDir();
