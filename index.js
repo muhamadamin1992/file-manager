@@ -49,6 +49,10 @@ const commands = {
         })
     );
   },
+  cat: async (filePath) => {
+    const data = await readFile(relative(currentDir, filePath));
+    console.log(data.toString());
+  },
 };
 
 process.stdin.setDefaultEncoding("utf-8").on("data", async (data) => {
