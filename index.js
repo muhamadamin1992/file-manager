@@ -12,6 +12,7 @@ import {
 import { createWriteStream, createReadStream } from "node:fs";
 import { pipeline } from "node:stream/promises";
 import { createHash } from "node:crypto";
+import { createBrotliCompress, createBrotliDecompress } from "node:zlib";
 
 const {
   values: { username },
@@ -123,6 +124,20 @@ const commands = {
       hash.update(content);
       console.log(hash.digest("hex"));
     });
+  },
+  compress: async (source, dest) => {
+    await pipeline(
+      createReadStream(join(currentDir, source)),
+      createBrotliCompress(),
+      createWriteStream(join(currentDir, dest))
+    );
+  },
+  decompress: async (source, dest) => {
+    await pipeline(
+      createReadStream(join(currentDir, source)),
+      createBrotliDecompress(),
+      createWriteStream(join(currentDir, dest))
+    );
   },
 };
 
