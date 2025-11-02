@@ -11,6 +11,7 @@ import {
 } from "node:fs/promises";
 import { createWriteStream, createReadStream } from "node:fs";
 import { pipeline } from "node:stream/promises";
+import { createHash } from "node:crypto";
 
 const {
   values: { username },
@@ -103,7 +104,26 @@ const commands = {
       return;
     }
     console.log(osCommand);
-  }
+  },
+  hash: async (fileName) => {
+    const hash = createHash("sha256");
+
+    const input = createReadStream(join(currentDir, fileName));
+    const chunks = [];
+
+    input.on("readable", () => {
+      let chunk;
+      while (null !== (chunk = input.read())) {
+        chunks.push(chunk);
+      }
+    });
+
+    input.on("end", () => {
+      const content = chunks.join("");
+      hash.update(content);
+      console.log(hash.digest("hex"));
+    });
+  },
 };
 
 process.stdin.setDefaultEncoding("utf-8").on("data", async (data) => {
