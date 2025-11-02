@@ -1,7 +1,14 @@
 import { homedir } from "node:os";
 import { resolve, join } from "node:path";
 import { parseArgs } from "node:util";
-import { readdir, readFile, writeFile, mkdir, rename } from "node:fs/promises";
+import {
+  readdir,
+  readFile,
+  writeFile,
+  mkdir,
+  rename,
+  unlink,
+} from "node:fs/promises";
 import { createWriteStream, createReadStream } from "node:fs";
 import { pipeline } from "node:stream/promises";
 
@@ -72,6 +79,9 @@ const commands = {
     const sourcePath = join(currentDir, sourceName);
     const copyPath = join(currentDir, copyDir);
     await pipeline(createReadStream(sourcePath), createWriteStream(copyPath));
+  },
+  rm: async (fileName) => {
+    await unlink(join(currentDir, fileName));
   },
 };
 
